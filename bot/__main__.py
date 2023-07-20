@@ -50,22 +50,10 @@ async def stats(_, message):
         last_commit = 'No UPSTREAM_REPO'
         version = 'N/A'
         change_log = 'N/A'
-
-    sysTime = get_readable_time(time() - boot_time())
-    botTime = get_readable_time(time() - botStartTime)
-    remaining_time = 86400 - (time() - botStartTime)
-    res_time = '⚠️ Soon ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
     total, used, free, disk= disk_usage('/')
-    total = get_readable_file_size(total)
-    used = get_readable_file_size(used)
-    free = get_readable_file_size(free)
-    sent = get_readable_file_size(net_io_counters().bytes_sent)
-    recv = get_readable_file_size(net_io_counters().bytes_recv)
-    cpuUsage = cpu_percent(interval=1)
-    v_core = cpu_count(logical=True) - cpu_count(logical=False)
+    cpuUsage = cpu_percent(interval=0.5)
     memory = virtual_memory()
     swap = swap_memory()
-    mem_p = memory.percent
 
     DIR = 'Unlimited' if config_dict['DIRECT_LIMIT'] == '' else config_dict['DIRECT_LIMIT']
     YTD = 'Unlimited' if config_dict['YTDLP_LIMIT'] == '' else config_dict['YTDLP_LIMIT']
@@ -77,40 +65,41 @@ async def stats(_, message):
     UMT = 'Unlimited' if config_dict['USER_MAX_TASKS'] == '' else config_dict['USER_MAX_TASKS']
     BMT = 'Unlimited' if config_dict['QUEUE_ALL'] == '' else config_dict['QUEUE_ALL']
 
-    stats = BotTheme('STATS
-            f'<b><i><u>Repo Info</u></i></b>\n' \
-            f'<b>Updated:</b> <code>{last_commit}</code>\n' \
-            f'<b>Version:</b> <code>{version}</code>\n' \
-            f'<b>Change Log:</b> <code>{change_log}</code>\n\n' \
-            f'<b><i><u>Bot Info</u></i></b>\n' \
-            f'<b>SYS UPTM:</b> <code>{sysTime}</code>\n' \
-            f'<b>BOT UPTM:</b> <code>{botTime}</code>\n' \
-            f'<b>BOT Restart:</b> <code>{res_time}</code>\n\n' \
-            f'<b>CPU:</b> <code>{get_progress_bar_string(cpuUsage)} {cpuUsage}%</code>\n' \
-            f'<b>CPU Total Core(s):</b> <code>{cpu_count(logical=True)}</code>\n' \
-            f'<b>P-Core(s):</b> <code>{cpu_count(logical=False)}</code> | <b>V-Core(s):</b> <code>{v_core}</code>\n' \
-            f'<b>Frequency:</b> <code>{cpu_freq(percpu=False).current / 1000:.2f} GHz</code>\n\n' \
-            f'<b>RAM:</b> <code>{get_progress_bar_string(mem_p)} {mem_p}%</code>\n' \
-            f'<b>RAM In Use:</b> <code>{get_readable_file_size(memory.used)}</code> [{mem_p}%]\n' \
-            f'<b>Total:</b> <code>{get_readable_file_size(memory.total)}</code> | <b>Free:</b> <code>{get_readable_file_size(memory.available)}</code>\n\n' \
-            f'<b>SWAP:</b> <code>{get_progress_bar_string(swap.percent)} {swap.percent}%</code>\n' \
-            f'<b>SWAP In Use:</b> <code>{get_readable_file_size(swap.used)}</code> [{swap.percent}%]\n' \
-            f'<b>Allocated</b> <code>{get_readable_file_size(swap.total)}</code> | <b>Free:</b> <code>{get_readable_file_size(swap.free)}</code>\n\n' \
-            f'<b>DISK:</b> <code>{get_progress_bar_string(disk)} {disk}%</code>\n' \
-            f'<b>Drive In Use:</b> <code>{used}</code> [{disk}%]\n' \
-            f'<b>Total:</b> <code>{total}</code> | <b>Free:</b> <code>{free}</code>\n\n' \
-            f'<b>UL:</b> <code>{sent}</code> | <b>DL:</b> <code>{recv}</code>\n\n' \
-            f'<b><i><u>Bot Limits</u></i></b>\n' \
-            f'<code>Torrent   : {TOR}</code> <b>GB</b>\n' \
-            f'<code>G-Drive   : {GDL}</code> <b>GB</b>\n' \
-            f'<code>Yt-Dlp    : {YTD}</code> <b>GB</b>\n' \
-            f'<code>Direct    : {DIR}</code> <b>GB</b>\n' \
-            f'<code>Clone     : {CLL}</code> <b>GB</b>\n' \
-            f'<code>Leech     : {TGL}</code> <b>GB</b>\n' \
-            f'<code>MEGA      : {MGA}</code> <b>GB</b>\n' \
-            f'<code>User Tasks: {UMT}</code>\n' \
-            f'<code>Bot Tasks : {BMT}</code>'
-    reply_message = await sendMessage(message, stats)
+    stats = BotTheme('STATS',
+                     last_commit=last_commit,
+                     bot_version=get_version(),
+                     commit_details=changelog,
+                     bot_uptime=get_readable_time(time() - botStartTime),
+                     os_uptime=get_readable_time(time() - boot_time()),
+                     os_arch=f"{platform.system()}, {platform.release()}, {platform.machine()}",
+                     cpu=cpuUsage,
+                     cpu_bar=get_progress_bar_string(cpuUsage),
+                     cpu_freq=f"{cpu_freq(percpu=False).current / 1000:.2f} GHz" if cpu_freq() else "Access Denied",
+                     p_core=cpu_count(logical=False),
+                     v_core=cpu_count(logical=True) - cpu_count(logical=False),
+                     total_core=cpu_count(logical=True),
+                     ram_bar=get_progress_bar_string(memory.percent),
+                     ram=memory.percent,
+                     ram_u=get_readable_file_size(memory.used),
+                     ram_f=get_readable_file_size(memory.available),
+                     ram_t=get_readable_file_size(memory.total),
+                     swap_bar=get_progress_bar_string(swap.percent),
+                     swap=swap.percent,
+                     swap_u=get_readable_file_size(swap.used),
+                     swap_f=get_readable_file_size(swap.free),
+                     swap_t=get_readable_file_size(swap.total),
+                     disk=disk,
+                     disk_bar=get_progress_bar_string(disk),
+                     disk_t=get_readable_file_size(total),
+                     disk_u=get_readable_file_size(used),
+                     disk_f=get_readable_file_size(free),
+                     up_data=get_readable_file_size(
+                         net_io_counters().bytes_sent),
+                     dl_data=get_readable_file_size(
+                         net_io_counters().bytes_recv)
+                     )
+
+    reply_message = await sendMessage(message, stats,  photo='IMAGES')
     await auto_delete_message(message, reply_message)
 
 
@@ -169,6 +158,31 @@ async def log(_, message):
     buttons = ButtonMaker()
     buttons.ibutton('📑 Log Display', f'wzmlx {message.from_user.id} logdisplay')
     await sendFile(message, 'log.txt', buttons=buttons.build_menu(1))
+async def search_images():
+    if config_dict['IMG_SEARCH']:
+        try:
+            query_list = config_dict['IMG_SEARCH']
+            total_pages = config_dict['IMG_PAGE']
+            base_url = "https://www.wallpaperflare.com/search"
+
+            for query in query_list:
+                query = query.strip().replace(" ", "+")
+                for page in range(1, total_pages + 1):
+                    url = f"{base_url}?wallpaper={query}&width=1280&height=720&page={page}"
+                    r = rget(url)
+                    soup = BeautifulSoup(r.text, "html.parser")
+                    images = soup.select('img[data-src^="https://c4.wallpaperflare.com/wallpaper"]')
+                    for img in images:
+                        img_url = img['data-src']
+                        if img_url not in config_dict['IMAGES']:
+                            config_dict['IMAGES'].append(img_url)
+            if len(config_dict['IMAGES']) != 0:
+                config_dict['STATUS_LIMIT'] = 2
+            if DATABASE_URL:
+                await DbManger().update_config({'IMAGES': config_dict['IMAGES'], 'STATUS_LIMIT': config_dict['STATUS_LIMIT']})
+        except Exception as e:
+            LOGGER.error(f"An error occurred: {e}")
+
 
 help_string = f'''
 <b>NOTE: Click on any CMD to see more detalis.</b>
@@ -281,7 +295,7 @@ async def restart_notification():
 
     if await aiopath.isfile(".restartmsg"):
         try:
-            await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Restarted Successfully!')
+                        await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text=BotTheme('RESTART_SUCCESS', time=now.strftime('%I:%M:%S %p'), date=now.strftime('%d/%m/%y'), timz=config_dict['TIMEZONE'], version=get_version()))
         except:
             pass
         await aioremove(".restartmsg")
