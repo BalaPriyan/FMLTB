@@ -49,6 +49,13 @@ categories_dict = {}
 non_queued_dl = set()
 non_queued_up = set()
 
+
+def get_version():
+    MAJOR = '1'
+    MINOR = '1'
+    PATCH = '5'
+    return f"v{MAJOR}.{MINOR}.{PATCH}-x"
+
 try:
     if bool(environ.get('_____REMOVE_THIS_LINE_____')):
         error('README is there to be read! Read and try again! Exiting now!')
@@ -75,7 +82,7 @@ bot_id = BOT_TOKEN.split(':', 1)[0]
 DATABASE_URL = environ.get('DATABASE_URL', '')
 if len(DATABASE_URL) == 0:
     DATABASE_URL = ''
-
+  
 if DATABASE_URL:
     conn = MongoClient(DATABASE_URL)
     db = conn.z
@@ -122,6 +129,16 @@ TELEGRAM_HASH = environ.get('TELEGRAM_HASH', '')
 if len(TELEGRAM_HASH) == 0:
     error("TELEGRAM_HASH variable is missing! Exiting now")
     exit(1)
+
+TIMEZONE = environ.get('TIMEZONE', '')
+if len(TIMEZONE) == 0:
+    TIMEZONE = 'Asia/Kolkata'
+
+def changetz(*args):
+    return datetime.now(timezone(TIMEZONE)).timetuple()
+Formatter.converter = changetz
+log_info("TIMEZONE synced with logging status")
+
 
 GDRIVE_ID = environ.get('GDRIVE_ID', '')
 if len(GDRIVE_ID) == 0:
@@ -236,6 +253,19 @@ YT_DLP_OPTIONS = environ.get('YT_DLP_OPTIONS', '')
 if len(YT_DLP_OPTIONS) == 0:
     YT_DLP_OPTIONS = ''
 
+
+AUTHOR_NAME = environ.get('AUTHOR_NAME', '')
+if len(AUTHOR_NAME) == 0:
+    AUTHOR_NAME = 'Mikey'
+
+AUTHOR_URL = environ.get('AUTHOR_URL', '')
+if len(AUTHOR_URL) == 0:
+    AUTHOR_URL = 'https://t.me/KingOfFondness'
+
+TITLE_NAME = environ.get('TITLE_NAME', '')
+if len(TITLE_NAME) == 0:
+    TITLE_NAME = 'Fondness'
+
 SEARCH_LIMIT = environ.get('SEARCH_LIMIT', '')
 SEARCH_LIMIT = 0 if len(SEARCH_LIMIT) == 0 else int(SEARCH_LIMIT)
 
@@ -322,6 +352,17 @@ RCLONE_SERVE_PASS = environ.get('RCLONE_SERVE_PASS', '')
 if len(RCLONE_SERVE_PASS) == 0:
     RCLONE_SERVE_PASS = ''
 
+LINKS_LOG_ID = environ.get('LINKS_LOG_ID', '')
+LINKS_LOG_ID = '' if len(LINKS_LOG_ID) == 0 else int(LINKS_LOG_ID)
+
+MIRROR_LOG_ID = environ.get('MIRROR_LOG_ID', '')
+if len(MIRROR_LOG_ID) == 0:
+    MIRROR_LOG_ID = ''
+    
+LEECH_LOG_ID = environ.get('LEECH_LOG_ID', '')
+if len(LEECH_LOG_ID) == 0:
+    LEECH_LOG_ID = ''
+  
 LOG_CHAT_ID = environ.get('LOG_CHAT_ID', '')
 if LOG_CHAT_ID.startswith('-100'):
     LOG_CHAT_ID = int(LOG_CHAT_ID)
@@ -396,11 +437,39 @@ FSUB_IDS = environ.get('FSUB_IDS', '')
 if len(FSUB_IDS) == 0:
     FSUB_IDS = ''
 
+BOT_THEME = environ.get('BOT_THEME', '')
+if len(BOT_THEME) == 0:
+    BOT_THEME = 'minimal'
+
+IMAGES = environ.get('IMAGES', '')
+IMAGES = (IMAGES.replace("'", '').replace('"', '').replace(
+    '[', '').replace(']', '').replace(",", "")).split()
+if IMAGES:
+    STATUS_LIMIT = 2
+
+IMG_SEARCH = environ.get('IMG_SEARCH', '')
+IMG_SEARCH = (IMG_SEARCH.replace("'", '').replace('"', '').replace(
+    '[', '').replace(']', '').replace(",", "")).split()
+
+IMG_PAGE = environ.get('IMG_PAGE', '')
+IMG_PAGE = int(IMG_PAGE) if IMG_PAGE.isdigit() else ''
+
 USER_DUMP = environ.get('USER_DUMP', '')
 USER_DUMP = '' if len(USER_DUMP) == 0 else USER_DUMP
 if USER_DUMP.isdigit() or USER_DUMP.startswith('-'):
     USER_DUMP = int(USER_DUMP)
 
+AUTHOR_NAME = environ.get('AUTHOR_NAME', '')
+if len(AUTHOR_NAME) == 0:
+    AUTHOR_NAME = 'WZML-X'
+
+AUTHOR_URL = environ.get('AUTHOR_URL', '')
+if len(AUTHOR_URL) == 0:
+    AUTHOR_URL = 'https://t.me/WZML_X'
+
+TITLE_NAME = environ.get('TITLE_NAME', '')
+if len(TITLE_NAME) == 0:
+    TITLE_NAME = 'WZ-M/L-X'
 config_dict = {
     "AS_DOCUMENT": AS_DOCUMENT,
     "AUTHORIZED_CHATS": AUTHORIZED_CHATS,
@@ -458,6 +527,13 @@ config_dict = {
     "USER_MAX_TASKS": USER_MAX_TASKS,
     "LOG_CHAT_ID": LOG_CHAT_ID,
     "FSUB_IDS": FSUB_IDS,
+    'AUTHOR_NAME': AUTHOR_NAME,
+    'AUTHOR_URL': AUTHOR_URL,
+    'TITLE_NAME': TITLE_NAME,
+    'MIRROR_LOG_ID': MIRROR_LOG_ID,
+    'LEECH_LOG_ID': LEECH_LOG_ID,
+    'LINKS_LOG_ID': LINKS_LOG_ID,
+    'TIMEZONE': TIMEZONE,
     "STORAGE_THRESHOLD": STORAGE_THRESHOLD,
     "TORRENT_LIMIT": TORRENT_LIMIT,
     "DIRECT_LIMIT": DIRECT_LIMIT,
