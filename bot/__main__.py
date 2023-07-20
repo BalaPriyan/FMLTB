@@ -34,7 +34,7 @@ from .modules import (anonymous, authorize, bot_settings, cancel_mirror,
                       category_select, clone, eval, gd_count, gd_delete,
                       gd_list, leech_del, mirror_leech, rmdb, rss,
                       shell, status, torrent_search,
-                      torrent_select, users_settings, ytdlp)
+                      torrent_select, users_settings, ytdlp, save_msg, images, mediainfo)
 
 from .helper.themes import BotTheme
 
@@ -156,8 +156,9 @@ async def ping(_, message):
     
 async def log(_, message):
     buttons = ButtonMaker()
-    buttons.ibutton('📑 Log Display', f'wzmlx {message.from_user.id} logdisplay')
+    buttons.ibutton('📑 Log Display', f'fondx {message.from_user.id} logdisplay')
     await sendFile(message, 'log.txt', buttons=buttons.build_menu(1))
+  
 async def search_images():
     if config_dict['IMG_SEARCH']:
         try:
@@ -258,6 +259,7 @@ async def bot_help(_, message):
 
 
 async def restart_notification():
+      now=datetime.now(timezone(config_dict['TIMEZONE']))
     if await aiopath.isfile(".restartmsg"):
         with open(".restartmsg") as f:
             chat_id, msg_id = map(int, f)
