@@ -43,8 +43,17 @@ default_values = {'AUTO_DELETE_MESSAGE_DURATION': 120,
                   'RSS_DELAY': 900,
                   'STATUS_UPDATE_INTERVAL': 15,
                   'SEARCH_LIMIT': 0,
-                  'UPSTREAM_BRANCH': 'hk_code'}
-
+                  'UPSTREAM_BRANCH': 'hk_code'
+                  'BOT_THEME': 'minimal',
+                  'BOT_LANG': 'en',
+                  'IMG_PAGE': 1,
+                  'AUTHOR_NAME': 'WZML-X',
+                  'AUTHOR_URL': 'https://t.me/WZML_X',
+                  'TITLE_NAME': 'WZ Mirror/Leech X',
+                  'GD_INFO': 'Uploaded by WZML-X',
+                 }
+bool_vars = ['AS_DOCUMENT', 'BOT_PM', 'STOP_DUPLICATE', 'SET_COMMANDS', 'SAVE_MSG', 'SHOW_MEDIAINFO', 'SOURCE_LINK', 'SAFE_MODE', 'SHOW_EXTRA_CMDS',
+             'IS_TEAM_DRIVE', 'USE_SERVICE_ACCOUNTS', 'WEB_PINCODE', 'EQUAL_SPLITS', 'DISABLE_DRIVE_LINK', 'DELETE_LINKS', 'CLEAN_LOG_MSG']
 
 async def load_config():
 
@@ -138,6 +147,34 @@ async def load_config():
     LEECH_REMOVE_UNWANTED = environ.get('LEECH_REMOVE_UNWANTED', '')
     if len(LEECH_REMOVE_UNWANTED) == 0:
         LEECH_REMOVE_UNWANTED = ''
+
+      LEECH_FILENAME_PREFIX = environ.get('LEECH_FILENAME_PREFIX', '')
+    if len(LEECH_FILENAME_PREFIX) == 0:
+        LEECH_FILENAME_PREFIX = ''
+
+    LEECH_FILENAME_SUFFIX = environ.get('LEECH_FILENAME_SUFFIX', '')
+    if len(LEECH_FILENAME_SUFFIX) == 0:
+        LEECH_FILENAME_SUFFIX = ''
+
+    LEECH_FILENAME_CAPTION = environ.get('LEECH_FILENAME_CAPTION', '')
+    if len(LEECH_FILENAME_CAPTION) == 0:
+        LEECH_FILENAME_CAPTION = ''
+
+    LEECH_FILENAME_REMNAME = environ.get('LEECH_FILENAME_REMNAME', '')
+    if len(LEECH_FILENAME_REMNAME) == 0:
+        LEECH_FILENAME_REMNAME = ''
+
+    MIRROR_FILENAME_PREFIX = environ.get('MIRROR_FILENAME_PREFIX', '')
+    if len(MIRROR_FILENAME_PREFIX) == 0:
+        MIRROR_FILENAME_PREFIX = ''
+
+    MIRROR_FILENAME_SUFFIX = environ.get('MIRROR_FILENAME_SUFFIX', '')
+    if len(MIRROR_FILENAME_SUFFIX) == 0:
+        MIRROR_FILENAME_SUFFIX = ''
+
+    MIRROR_FILENAME_REMNAME = environ.get('MIRROR_FILENAME_REMNAME', '')
+    if len(MIRROR_FILENAME_REMNAME) == 0:
+        MIRROR_FILENAME_REMNAME = ''
 
     SEARCH_PLUGINS = environ.get('SEARCH_PLUGINS', '')
     if len(SEARCH_PLUGINS) == 0:
@@ -360,12 +397,50 @@ async def load_config():
     DM_MODE = DM_MODE.lower() if DM_MODE.lower() in [
         'leech', 'mirror', 'all'] else ''
 
+    BOT_THEME = environ.get('BOT_THEME', '')
+    if len(BOT_THEME) == 0:
+        BOT_THEME = 'minimal'
+
+    IMG_SEARCH = environ.get('IMG_SEARCH', '')
+    IMG_SEARCH = (IMG_SEARCH.replace("'", '').replace('"', '').replace(
+        '[', '').replace(']', '').replace(",", "")).split()
+
+    IMG_PAGE = environ.get('IMG_PAGE', '')
+    IMG_PAGE = 1 if not IMG_PAGE else int(IMG_PAGE)
+
+    IMAGES = environ.get('IMAGES', '')
+    IMAGES = (IMAGES.replace("'", '').replace('"', '').replace(
+        '[', '').replace(']', '').replace(",", "")).split()
+
+    AUTHOR_NAME = environ.get('AUTHOR_NAME', '')
+    if len(AUTHOR_NAME) == 0:
+        AUTHOR_NAME = 'WZML-X'
+
+    AUTHOR_URL = environ.get('AUTHOR_URL', '')
+    if len(AUTHOR_URL) == 0:
+        AUTHOR_URL = 'https://t.me/WZML_X'
+
+    TITLE_NAME = environ.get('TITLE_NAME', '')
+    if len(TITLE_NAME) == 0:
+        TITLE_NAME = 'WeebZone-X'
+
+    GD_INFO = environ.get('GD_INFO', '')
+    if len(GD_INFO) == 0:
+        GD_INFO = 'Uploaded by WZML-X'
+
+    SAVE_MSG = environ.get('SAVE_MSG', '')
+    SAVE_MSG = SAVE_MSG.lower() == 'true'
+
     DELETE_LINKS = environ.get('DELETE_LINKS', '')
     DELETE_LINKS = DELETE_LINKS.lower() == 'true'
 
     FSUB_IDS = environ.get('FSUB_IDS', '')
     if len(FSUB_IDS) == 0:
         FSUB_IDS = ''
+
+    TIMEZONE = environ.get('TIMEZONE', '')
+    if len(TIMEZONE) == 0:
+        TIMEZONE = 'Asia/Kolkata'
 
     TOKEN_TIMEOUT = environ.get('TOKEN_TIMEOUT', '')
     if TOKEN_TIMEOUT.isdigit():
@@ -482,6 +557,24 @@ async def load_config():
                         'OWNER_ID': OWNER_ID,
                         'QUEUE_ALL': QUEUE_ALL,
                         'QUEUE_DOWNLOAD': QUEUE_DOWNLOAD,
+                        'TIMEZONE': TIMEZONE,
+                        'SAVE_MSG': SAVE_MSG,
+                         'LEECH_FILENAME_PREFIX': LEECH_FILENAME_PREFIX,
+                        'LEECH_FILENAME_SUFFIX': LEECH_FILENAME_SUFFIX,
+                        'LEECH_FILENAME_CAPTION': LEECH_FILENAME_CAPTION,
+                        'LEECH_FILENAME_REMNAME': LEECH_FILENAME_REMNAME,
+                        'MIRROR_FILENAME_PREFIX': MIRROR_FILENAME_PREFIX,
+                        'MIRROR_FILENAME_SUFFIX': MIRROR_FILENAME_SUFFIX,
+                        'MIRROR_FILENAME_REMNAME': MIRROR_FILENAME_REMNAME,
+                        'BOT_THEME': BOT_THEME,
+                        'IMAGES': IMAGES,
+                        'IMG_SEARCH': IMG_SEARCH,
+                        'IMG_PAGE': IMG_PAGE,
+                        'IMDB_TEMPLATE': DEF_IMDB_TEMP,
+                        'AUTHOR_NAME': AUTHOR_NAME,
+                        'AUTHOR_URL': AUTHOR_URL,
+                        'TITLE_NAME': TITLE_NAME,
+                        'GD_INFO': GD_INFO,
                         'QUEUE_UPLOAD': QUEUE_UPLOAD,
                         'RCLONE_FLAGS': RCLONE_FLAGS,
                         'RCLONE_PATH': RCLONE_PATH,
