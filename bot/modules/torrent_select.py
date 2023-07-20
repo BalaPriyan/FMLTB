@@ -38,8 +38,10 @@ async def select(client, message):
             await sendMessage(message, "This is not an active task!")
             return
     elif len(msg) == 1:
-        reply_message = await sendMessage(message, TOR_SEL_HELP_MESSAGE.format_map({'cmd': BotCommands.BtSelectCommand, 'mir': BotCommands.MirrorCommand[0]}))
-        await auto_delete_message(message, reply_message)
+        msg = ("Reply to an active /cmd which was used to start the qb-download or add gid along with cmd\n\n"
+               + "This command mainly for selection incase you decided to select files from already added torrent. "
+               + "But you can always use /cmd with arg `s` to select files before download start.")
+        await sendMessage(message, msg)
         return
 
     if not await CustomFilters.sudo(client, message) and dl.message.from_user.id != user_id:
