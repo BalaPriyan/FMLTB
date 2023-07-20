@@ -221,6 +221,30 @@ LEECH_FILENAME_PREFIX = environ.get('LEECH_FILENAME_PREFIX', '')
 if len(LEECH_FILENAME_PREFIX) == 0:
     LEECH_FILENAME_PREFIX = ''
 
+LEECH_FILENAME_SUFFIX = environ.get('LEECH_FILENAME_SUFFIX', '')
+if len(LEECH_FILENAME_SUFFIX) == 0:
+    LEECH_FILENAME_SUFFIX = ''
+
+LEECH_FILENAME_CAPTION = environ.get('LEECH_FILENAME_CAPTION', '')
+if len(LEECH_FILENAME_CAPTION) == 0:
+    LEECH_FILENAME_CAPTION = ''
+
+LEECH_FILENAME_REMNAME = environ.get('LEECH_FILENAME_REMNAME', '')
+if len(LEECH_FILENAME_REMNAME) == 0:
+    LEECH_FILENAME_REMNAME = ''
+    
+MIRROR_FILENAME_PREFIX = environ.get('MIRROR_FILENAME_PREFIX', '')
+if len(MIRROR_FILENAME_PREFIX) == 0:
+    MIRROR_FILENAME_PREFIX = ''
+
+MIRROR_FILENAME_SUFFIX = environ.get('MIRROR_FILENAME_SUFFIX', '')
+if len(MIRROR_FILENAME_SUFFIX) == 0:
+    MIRROR_FILENAME_SUFFIX = ''
+
+MIRROR_FILENAME_REMNAME = environ.get('MIRROR_FILENAME_REMNAME', '')
+if len(MIRROR_FILENAME_REMNAME) == 0:
+    MIRROR_FILENAME_REMNAME = ''
+
 LEECH_REMOVE_UNWANTED = environ.get('LEECH_REMOVE_UNWANTED', '')
 if len(LEECH_REMOVE_UNWANTED) == 0:
     LEECH_REMOVE_UNWANTED = ''
@@ -229,10 +253,8 @@ SEARCH_PLUGINS = environ.get('SEARCH_PLUGINS', '')
 if len(SEARCH_PLUGINS) == 0:
     SEARCH_PLUGINS = ''
 
-MAX_SPLIT_SIZE = 4194304000 if IS_PREMIUM_USER else 2097152000
-
 LEECH_SPLIT_SIZE = environ.get('LEECH_SPLIT_SIZE', '')
-if len(LEECH_SPLIT_SIZE) == 0 or int(LEECH_SPLIT_SIZE) > MAX_SPLIT_SIZE:
+if str(LEECH_SPLIT_SIZE) in ["4194304000", "2097152000"] or len(LEECH_SPLIT_SIZE) == 0 or int(LEECH_SPLIT_SIZE) > MAX_SPLIT_SIZE:
     LEECH_SPLIT_SIZE = MAX_SPLIT_SIZE
 else:
     LEECH_SPLIT_SIZE = int(LEECH_SPLIT_SIZE)
@@ -282,6 +304,38 @@ RSS_CHAT_ID = '' if len(RSS_CHAT_ID) == 0 else int(RSS_CHAT_ID)
 
 RSS_DELAY = environ.get('RSS_DELAY', '')
 RSS_DELAY = 900 if len(RSS_DELAY) == 0 else int(RSS_DELAY)
+
+SHOW_MEDIAINFO = environ.get('SHOW_MEDIAINFO', '')
+SHOW_MEDIAINFO = SHOW_MEDIAINFO.lower() == 'true'
+
+LINKS_LOG_ID = environ.get('LINKS_LOG_ID', '')
+LINKS_LOG_ID = '' if len(LINKS_LOG_ID) == 0 else int(LINKS_LOG_ID)
+
+IMAGES = environ.get('IMAGES', '')
+IMAGES = (IMAGES.replace("'", '').replace('"', '').replace(
+    '[', '').replace(']', '').replace(",", "")).split()
+if IMAGES:
+    STATUS_LIMIT = 2
+
+IMG_SEARCH = environ.get('IMG_SEARCH', '')
+IMG_SEARCH = (IMG_SEARCH.replace("'", '').replace('"', '').replace(
+    '[', '').replace(']', '').replace(",", "")).split()
+
+IMG_PAGE = environ.get('IMG_PAGE', '')
+IMG_PAGE = int(IMG_PAGE) if IMG_PAGE.isdigit() else ''
+
+SAVE_MSG = environ.get('SAVE_MSG', '')
+SAVE_MSG = SAVE_MSG.lower() == 'true'
+
+
+MIRROR_LOG_ID = environ.get('MIRROR_LOG_ID', '')
+if len(MIRROR_LOG_ID) == 0:
+    MIRROR_LOG_ID = ''
+    
+LEECH_LOG_ID = environ.get('LEECH_LOG_ID', '')
+if len(LEECH_LOG_ID) == 0:
+    LEECH_LOG_ID = ''
+
 
 TORRENT_TIMEOUT = environ.get('TORRENT_TIMEOUT', '')
 TORRENT_TIMEOUT = '' if len(TORRENT_TIMEOUT) == 0 else int(TORRENT_TIMEOUT)
@@ -441,35 +495,12 @@ BOT_THEME = environ.get('BOT_THEME', '')
 if len(BOT_THEME) == 0:
     BOT_THEME = 'minimal'
 
-IMAGES = environ.get('IMAGES', '')
-IMAGES = (IMAGES.replace("'", '').replace('"', '').replace(
-    '[', '').replace(']', '').replace(",", "")).split()
-if IMAGES:
-    STATUS_LIMIT = 2
-
-IMG_SEARCH = environ.get('IMG_SEARCH', '')
-IMG_SEARCH = (IMG_SEARCH.replace("'", '').replace('"', '').replace(
-    '[', '').replace(']', '').replace(",", "")).split()
-
-IMG_PAGE = environ.get('IMG_PAGE', '')
-IMG_PAGE = int(IMG_PAGE) if IMG_PAGE.isdigit() else ''
 
 USER_DUMP = environ.get('USER_DUMP', '')
 USER_DUMP = '' if len(USER_DUMP) == 0 else USER_DUMP
 if USER_DUMP.isdigit() or USER_DUMP.startswith('-'):
     USER_DUMP = int(USER_DUMP)
 
-AUTHOR_NAME = environ.get('AUTHOR_NAME', '')
-if len(AUTHOR_NAME) == 0:
-    AUTHOR_NAME = 'WZML-X'
-
-AUTHOR_URL = environ.get('AUTHOR_URL', '')
-if len(AUTHOR_URL) == 0:
-    AUTHOR_URL = 'https://t.me/WZML_X'
-
-TITLE_NAME = environ.get('TITLE_NAME', '')
-if len(TITLE_NAME) == 0:
-    TITLE_NAME = 'WZ-M/L-X'
 config_dict = {
     "AS_DOCUMENT": AS_DOCUMENT,
     "AUTHORIZED_CHATS": AUTHORIZED_CHATS,
@@ -492,6 +523,7 @@ config_dict = {
     "LEECH_REMOVE_UNWANTED": LEECH_REMOVE_UNWANTED,
     "LEECH_SPLIT_SIZE": LEECH_SPLIT_SIZE,
     "MEDIA_GROUP": MEDIA_GROUP,
+    'SAVE_MSG': SAVE_MSG,
     "MEGA_EMAIL": MEGA_EMAIL,
     "MEGA_PASSWORD": MEGA_PASSWORD,
     "OWNER_ID": OWNER_ID,
@@ -534,6 +566,14 @@ config_dict = {
     'LEECH_LOG_ID': LEECH_LOG_ID,
     'LINKS_LOG_ID': LINKS_LOG_ID,
     'TIMEZONE': TIMEZONE,
+    'GD_INFO': GD_INFO,
+    'LEECH_FILENAME_PREFIX': LEECH_FILENAME_PREFIX,
+    'LEECH_FILENAME_SUFFIX': LEECH_FILENAME_SUFFIX,
+    'LEECH_FILENAME_CAPTION': LEECH_FILENAME_CAPTION,
+    'LEECH_FILENAME_REMNAME': LEECH_FILENAME_REMNAME,
+    'MIRROR_FILENAME_PREFIX': MIRROR_FILENAME_PREFIX,
+    'MIRROR_FILENAME_SUFFIX': MIRROR_FILENAME_SUFFIX,
+    'MIRROR_FILENAME_REMNAME': MIRROR_FILENAME_REMNAME,
     "STORAGE_THRESHOLD": STORAGE_THRESHOLD,
     "TORRENT_LIMIT": TORRENT_LIMIT,
     "DIRECT_LIMIT": DIRECT_LIMIT,
