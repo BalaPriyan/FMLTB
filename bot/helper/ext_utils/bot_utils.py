@@ -486,13 +486,4 @@ async def set_commands(client):
             BotCommand(f'{BotCommands.UserSetCommand}', 'Users settings'),
             BotCommand(f'{BotCommands.HelpCommand}', 'Get detailed help'),
         ])
-            LOGGER.info('Bot Commands have been Set & Updated')
-        except Exception as err:
-            LOGGER.error(err)
 
-
-
-def is_valid_token(url, token):
-    resp = rget(url=f"{url}getAccountDetails?token={token}&allDetails=true").json()
-    if resp["status"] == "error-wrongToken":
-        raise Exception("Invalid Gofile Token, Get your Gofile token from --> https://gofile.io/myProfile")
