@@ -21,7 +21,7 @@ class CustomFilters:
 
     authorized = create(authorized_user)
 
-       async def authorized_usetting(self, _, message):
+    async def authorized_usetting(self, _, message):
         uid = (message.from_user or message.sender_chat).id
         chat_id = message.chat.id
         isExists = False
@@ -41,9 +41,9 @@ class CustomFilters:
 
 authorized_uset = create(authorized_usetting)
 
-    async def sudo_user(self, client, update):
-        user = update.from_user or update.sender_chat
-        uid = user.id
-        return bool(uid == OWNER_ID or uid in user_data and user_data[uid].get('is_sudo'))
+async def sudo_user(self, client, update):
+    user = update.from_user or update.sender_chat
+    uid = user.id
+    return bool(uid == OWNER_ID or uid in user_data and user_data[uid].get('is_sudo'))
 
-    sudo = create(sudo_user)
+sudo = create(sudo_user)
