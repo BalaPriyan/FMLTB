@@ -126,6 +126,12 @@ def get_progress_bar_string(pct):
     p_str += '○' * (12 - cFull)
     return f"[{p_str}]"
 
+def get_rclone_version():
+    try:
+        result = srun(['rclone', 'version'], capture_output=True, text=True)
+        return result.stdout.split('\n')[0].split(' ')[1]
+    except FileNotFoundError:
+        return ''
 
 class EngineStatus:
     STATUS_ARIA = f"Aria2 v{aria2.client.get_version()['version']}"
