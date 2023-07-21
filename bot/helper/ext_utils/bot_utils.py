@@ -11,8 +11,8 @@ from psutil import disk_usage
 from pyrogram.types import BotCommand
 from aiohttp import ClientSession
 
-from bot import (bot_loop, bot_name, botStartTime, config_dict, download_dict,
-                 download_dict_lock, extra_buttons, user_data)
+from bot import (bot_loop, bot_name, botStartTime, config_dict, OWNER_ID, DATABASE_URL, LOGGER, get_client, aria2, download_dict, download_dict_lock, extra_buttons, user_data)
+               
 from bot.helper.ext_utils.shortener import short_url
 from bot.helper.ext_utils.telegraph_helper import telegraph
 from bot.helper.telegram_helper.bot_commands import BotCommands
@@ -125,6 +125,21 @@ def get_progress_bar_string(pct):
         p_str += ['◔', '◓', '◒', '◑', '◐', '◕', '●'][cPart]
     p_str += '○' * (12 - cFull)
     return f"[{p_str}]"
+
+def get_p7zip_version():
+    try:
+        result = srun(['7z', '-version'], capture_output=True, text=True)
+        return result.stdout.split('\n')[2].split(' ')[2]
+    except FileNotFoundError:
+        return ''
+
+
+def get_ffmpeg_version():
+    try:
+        result = srun(['ffmpeg', '-version'], capture_output=True, text=True)
+        return result.stdout.split('\n')[0].split(' ')[2].split('ubuntu')[0]
+    except FileNotFoundError:
+        return ''
 
 def get_rclone_version():
     try:
