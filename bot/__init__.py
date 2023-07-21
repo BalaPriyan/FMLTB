@@ -1,8 +1,8 @@
-from asyncio import Lock
+refrom asyncio import Lock
 from collections import OrderedDict
 from faulthandler import enable as faulthandler_enable
 from logging import (INFO, FileHandler, StreamHandler, basicConfig,
-                     error, getLogger, info, warning, Formatter)
+                     error, getLogger, log_info, info, warning, Formatter)
 from os import environ, path as ospath, remove, getcwd
 from socket import setdefaulttimeout
 from subprocess import Popen, run as zrun, check_output
