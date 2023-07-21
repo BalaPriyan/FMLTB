@@ -3,6 +3,7 @@ from asyncio import (create_subprocess_exec, create_subprocess_shell,
 from asyncio.subprocess import PIPE
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial, wraps
+from pkg_resources import get_distribution
 from html import escape
 from re import match as re_match
 from time import time
@@ -114,7 +115,7 @@ def bt_selection_buttons(id_, isCanCncl=True):
 
 
 async def get_telegraph_list(telegraph_content):
-    path = [(await telegraph.create_page(title='Z Drive Search', content=content))["path"] for content in telegraph_content]
+    path = [(await telegraph.create_page(title='F Drive Search', content=content))["path"] for content in telegraph_content]
     if len(path) > 1:
         await telegraph.edit_telegraph(path, telegraph_content)
     buttons = ButtonMaker()
@@ -158,7 +159,9 @@ def get_rclone_version():
 
 class EngineStatus:
     STATUS_ARIA = f"Aria2 v{aria2.client.get_version()['version']}"
+    STATUS_GD = f"Google-API v{get_distribution('google-api-python-client').version}"
     STATUS_MEGA = f"MegaSDK v{MegaApi('test').getVersion()}"
+    STATUS_TG = f"Pyrogram v{get_distribution('pyrogram').version}"
     STATUS_QB = f"qBit {get_client().app.version}"
     STATUS_YT = f"yt-dlp v{get_distribution('yt-dlp').version}"
     STATUS_EXT = "pExtract v2"
