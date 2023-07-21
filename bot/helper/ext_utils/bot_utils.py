@@ -21,6 +21,7 @@ from aiofiles.os import remove as aioremove, path as aiopath, mkdir
 from concurrent.futures import ThreadPoolExecutor
 from requests import get as rget
 from mega import MegaApi
+from subprocess import run as srun
 
 from bot import bot_loop, bot_name, botStartTime, config_dict, OWNER_ID, DATABASE_URL, LOGGER, get_client, aria2, download_dict, download_dict_lock, extra_buttons, user_data
 from bot.helper.ext_utils.shortener import short_url
