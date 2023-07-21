@@ -486,7 +486,6 @@ async def set_commands(client):
             BotCommand(f'{BotCommands.UserSetCommand}', 'Users settings'),
             BotCommand(f'{BotCommands.HelpCommand}', 'Get detailed help'),
         ])
-            await client.set_bot_commands(bot_cmds)
             LOGGER.info('Bot Commands have been Set & Updated')
         except Exception as err:
             LOGGER.error(err)
