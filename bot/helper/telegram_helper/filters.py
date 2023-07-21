@@ -39,11 +39,11 @@ class CustomFilters:
                     continue
         return isExists
 
-authorized_uset = create(authorized_usetting)
+    authorized_uset = create(authorized_usetting)
 
-async def sudo_user(self, client, update):
-    user = update.from_user or update.sender_chat
-    uid = user.id
-    return bool(uid == OWNER_ID or uid in user_data and user_data[uid].get('is_sudo'))
+    async def sudo_user(self, client, update): 
+        user = update.from_user or update.sender_chat
+        uid = user.id
+        return bool(uid == OWNER_ID or uid in user_data and user_data[uid].get('is_sudo'))
 
-sudo = create(sudo_user)
+     sudo = create(sudo_user)
