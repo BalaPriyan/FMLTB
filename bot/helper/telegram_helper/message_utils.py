@@ -3,9 +3,8 @@ from datetime import datetime, timedelta, timezone
 from time import time
 from re import match as re_match
 
-from pyrogram.errors import (FloodWait, PeerIdInvalid, RPCError,
-                             UserNotParticipant)
-from pyrogram.types import ChatPermissions
+from pyrogram.errors import ReplyMarkupInvalid, FloodWait, PeerIdInvalid, RPCError, UserNotParticipant, MessageNotModified, MessageEmpty, PhotoInvalidDimensions, WebpageCurlFailed, MediaEmpty
+from pyrogram.types import ChatPermissions, InputMediaPhoto
 
 from bot import (LOGGER, Interval, bot, bot_name, cached_dict, categories_dict,
                  config_dict, download_dict_lock, status_reply_dict,
@@ -17,27 +16,49 @@ from bot.helper.ext_utils.exceptions import TgLinkException
 
 async def sendMessage(message, text, buttons=None):
     try:
+        if photo:
+            try:
+                if photo == 'IMAGES':
+                    photo = rchoice(config_dict['IMAGES'])
+                return await message.reply_photo(photo=photo, reply_to_message_id=message.id,
+                                                 caption=text, reply_markup=buttons, disable_notification=True)
+            except IndexError:
+                pass
+            except (PhotoInvalidDimensions, WebpageCurlFailed, MediaEmpty):
+                des_dir = await download_image_url(photo)
+                await sendMessage(message, text, buttons, des_dir)
+                await aioremove(des_dir)
+                return
+            except Exception as e:
+                LOGGER.error(format_exc())
         return await message.reply(text=text, quote=True, disable_web_page_preview=True,
                                    disable_notification=True, reply_markup=buttons)
     except FloodWait as f:
         LOGGER.warning(str(f))
         await sleep(f.value * 1.2)
-        return await sendMessage(message, text, buttons)
-    except RPCError as e:
-        LOGGER.error(f"{e.NAME}: {e.MESSAGE}")
+        return await sendMessage(message, text, buttons, photo)
+    except ReplyMarkupInvalid:
+        return await sendMessage(message, text, None, photo)
     except Exception as e:
-        LOGGER.error(str(e))
+        LOGGER.error(format_exc())
+        return str(e)
 
 
 async def editMessage(message, text, buttons=None):
     try:
+        if message.media:
+            if photo:
+                return await message.edit_media(InputMediaPhoto(photo, text), reply_markup=buttons)
+            return await message.edit_caption(caption=text, reply_markup=buttons)
         await message.edit(text=text, disable_web_page_preview=True, reply_markup=buttons)
     except FloodWait as f:
         LOGGER.warning(str(f))
         await sleep(f.value * 1.2)
-        return await editMessage(message, text, buttons)
-    except RPCError as e:
-        LOGGER.error(f"{e.NAME}: {e.MESSAGE}")
+        return await editMessage(message, text, buttons, photo)
+    except (MessageNotModified, MessageEmpty):
+        pass
+    except ReplyMarkupInvalid:
+        return await editMessage(message, text, None, photo)
     except Exception as e:
         LOGGER.error(str(e))
         return str(e)
@@ -302,7 +323,7 @@ async def forcesub(message, ids, button=None):
     if join_button:
         if button is None:
             button = ButtonMaker()
-        _msg = f"Hey, You Can't Use Me Join The Main Channel And Try."
+        _msg = f"Hey, You Can't Use Me Before Trying Join The Main Channel."
         for key, value in join_button.items():
             button.ubutton(f'{key}', value, 'footer')
     return _msg, button
