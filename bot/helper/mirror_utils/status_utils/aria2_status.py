@@ -1,7 +1,7 @@
 from time import time
 
 from bot import LOGGER, aria2
-from bot.helper.ext_utils.bot_utils import (EngineStatus, MirrorStatus, get_readable_time, sync_to_async)
+from bot.helper.ext_utils.bot_utils import EngineStatus, MirrorStatus, get_readable_time, sync_to_async
 
 
 def get_download(gid):
@@ -24,7 +24,7 @@ class Aria2Status:
         self.message = listener.message
         self.extra_details = self.__listener.extra_details
         self.engine = engine_
-        self.upload_details = upload_details
+        self.upload_details = self.__listener.upload_details
 
     def __update(self):
         if self.__download is None:
@@ -117,7 +117,6 @@ class Aria2Status:
                 msg = 'Download stopped by user!'
             await self.__listener.onDownloadError(msg)
             await sync_to_async(aria2.remove, [self.__download], force=True, files=True)
-
 
     def eng(self):
         return EngineStatus.STATUS_ARIA
