@@ -19,6 +19,7 @@ from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.telegram_helper.button_build import ButtonMaker
 from bot.helper.themes import BotTheme
 from bot.helper.ext_utils.db_handler import DbManger
+from bot.helper.mirror_utils.status_utils.aria2_status import Aria2Status
 
 THREADPOOL = ThreadPoolExecutor(max_workers=10)
 
