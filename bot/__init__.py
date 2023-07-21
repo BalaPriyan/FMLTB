@@ -137,7 +137,7 @@ if len(TIMEZONE) == 0:
 def changetz(*args):
     return datetime.now(timezone(TIMEZONE)).timetuple()
 Formatter.converter = changetz
-log_info("TIMEZONE synced with logging status")
+log("TIMEZONE synced with logging status")
 
 
 GDRIVE_ID = environ.get('GDRIVE_ID', '')
