@@ -250,7 +250,7 @@ def get_readable_message():
     msg += BotTheme('DISK', free=get_readable_file_size(disk_usage(config_dict['DOWNLOAD_DIR']).free), free_p=round(100-disk_usage(config_dict['DOWNLOAD_DIR']).percent, 1))
     msg += BotTheme('uptime', uptime=get_readable_time(time() - botStartTime))
     msg += BotTheme('DL', DL=get_readable_file_size(dl_speed))
-    msg += BotTheme('UL', UL=get_readable_file_size(up_speed))"
+    msg += BotTheme('UL', UL=get_readable_file_size(up_speed))
     remaining_time = 86400 - (time() - botStartTime)
     res_time = '⚠️ ANYTIME ⚠️' if remaining_time <= 0 else get_readable_time(remaining_time)
     if remaining_time <= 3600:
