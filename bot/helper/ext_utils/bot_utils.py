@@ -4,15 +4,24 @@ from asyncio.subprocess import PIPE
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial, wraps
 from html import escape
-from re import match
+from re import match as re_match
 from time import time
+from os import path as ospath
+from datetime import datetime
+from base64 import b64encode
 from uuid import uuid4
-from psutil import disk_usage
+from psutil import disk_usage, virtual_memory, cpu_percent
+from pyrogram.enums import ChatType
 from pyrogram.types import BotCommand
-from aiohttp import ClientSession
+from pyrogram.errors import PeerIdInvalid
+from aiohttp import ClientSession as aioClientSession
+from aiofiles import open as aiopen
+from aiofiles.os import remove as aioremove, path as aiopath, mkdir
+from concurrent.futures import ThreadPoolExecutor
+from requests import get as rget
+from mega import MegaApi
 
 from bot import bot_loop, bot_name, botStartTime, config_dict, OWNER_ID, DATABASE_URL, LOGGER, get_client, aria2, download_dict, download_dict_lock, extra_buttons, user_data
-               
 from bot.helper.ext_utils.shortener import short_url
 from bot.helper.ext_utils.telegraph_helper import telegraph
 from bot.helper.telegram_helper.bot_commands import BotCommands
