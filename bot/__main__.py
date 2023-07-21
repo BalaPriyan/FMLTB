@@ -19,7 +19,6 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from bot import (DATABASE_URL, INCOMPLETE_TASK_NOTIFIER, LOGGER,
                  STOP_DUPLICATE_TASKS, Interval, QbInterval, bot, botStartTime,
                  config_dict, scheduler, user_data,get_version )
-from bot.helper.listeners.aria2_listener import start_aria2_listener
 from .helper.telegram_helper.button_build import ButtonMaker
 from .helper.ext_utils.bot_utils import (cmd_exec, get_readable_file_size,
                                          get_readable_time, new_thread, set_commands,
