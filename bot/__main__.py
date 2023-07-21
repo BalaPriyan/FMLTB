@@ -104,10 +104,6 @@ async def stats(_, message):
 
 
 async def start(_, message):
-   buttons = ButtonMaker()
-    buttons.ubutton(BotTheme('ST_BN1_NAME'), BotTheme('ST_BN1_URL'))
-    buttons.ubutton(BotTheme('ST_BN2_NAME'), BotTheme('ST_BN2_URL'))
-    reply_markup = buttons.build_menu(2)
     if len(message.command) > 1 and message.command[1] == "fond":
         await message.delete()
     if len(message.command) > 1:
