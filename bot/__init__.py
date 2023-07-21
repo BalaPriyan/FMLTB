@@ -130,14 +130,6 @@ if len(TELEGRAM_HASH) == 0:
     error("TELEGRAM_HASH variable is missing! Exiting now")
     exit(1)
 
-TIMEZONE = environ.get('TIMEZONE', '')
-if len(TIMEZONE) == 0:
-    TIMEZONE = 'Asia/Kolkata'
-
-def changetz(*args):
-    return datetime.now(timezone(TIMEZONE)).timetuple()
-Formatter.converter = changetz
-log("TIMEZONE synced with logging status")
 
 
 GDRIVE_ID = environ.get('GDRIVE_ID', '')
