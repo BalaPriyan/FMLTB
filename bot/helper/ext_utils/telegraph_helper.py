@@ -101,6 +101,6 @@ class TelegraphHelper:
                 f'Failed Revoking telegraph access token due to : {e}')
 
 
-telegraph = TelegraphHelper(config_dict['AUTHOR_NAME'],
-                            config_dict['AUTHOR_URL'])
+telegraph = TelegraphHelper(
+    "FMLTB", "https://github.com/BalaPriyan/FMLTB")
 bot_loop.run_until_complete(telegraph.create_account())
