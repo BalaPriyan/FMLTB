@@ -160,7 +160,6 @@ class EngineStatus:
     STATUS_ARIA = f"Aria2 v{aria2.client.get_version()['version']}"
     STATUS_MEGA = f"MegaSDK v{MegaApi('test').getVersion()}"
     STATUS_QB = f"qBit {get_client().app.version}"
-    STATUS_TG = f"Pyrogram v{get_distribution('pyrogram').version}"
     STATUS_YT = f"yt-dlp v{get_distribution('yt-dlp').version}"
     STATUS_EXT = "pExtract v2"
     STATUS_SPLIT_MERGE = f"ffmpeg v{get_ffmpeg_version()}"
