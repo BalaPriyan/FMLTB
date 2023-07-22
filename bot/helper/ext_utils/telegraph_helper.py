@@ -45,6 +45,17 @@ class TelegraphHelper:
             await sleep(st.retry_after)
             return await self.create_page(title, content)
 
+        async def revoke_access_token(self):
+        if self.__error:
+            LOGGER.info('Telegraph is not working')
+            return
+        LOGGER.info('Revoking telegraph access token...')
+        try:
+            return await self.telegraph.revoke_access_token()
+        except Exception as e:
+            LOGGER.error(
+                f'Failed Revoking telegraph access token due to : {e}')
+
     async def edit_page(self, path, title, content):
         if self.__error:
             LOGGER.info('Telegraph is not working')
@@ -88,21 +99,8 @@ class TelegraphHelper:
             )
         return
 
+            
 
 telegraph = TelegraphHelper(config_dict['AUTHOR_NAME'],
                             config_dict['AUTHOR_URL'])
-
-
-    async def revoke_access_token(self):
-        if self.__error:
-            LOGGER.info('Telegraph is not working')
-            return
-        LOGGER.info('Revoking telegraph access token...')
-        try:
-            return await self.telegraph.revoke_access_token()
-        except Exception as e:
-            LOGGER.error(
-                f'Failed Revoking telegraph access token due to : {e}')
-
-
 bot_loop.run_until_complete(telegraph.create_account())
