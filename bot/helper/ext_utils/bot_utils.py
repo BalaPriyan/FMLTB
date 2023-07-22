@@ -18,7 +18,6 @@ from pyrogram.errors import PeerIdInvalid
 from aiohttp import ClientSession as aioClientSession
 from aiofiles import open as aiopen
 from aiofiles.os import remove as aioremove, path as aiopath, mkdir
-from concurrent.futures import ThreadPoolExecutor
 from requests import get as rget
 from mega import MegaApi
 from subprocess import run as zrun
