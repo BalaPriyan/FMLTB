@@ -185,7 +185,23 @@ Send Gdrive|Gdot|Filepress|Filebee|Appdrive|Gdflix link or rclone path along wit
 Note: If -up not specified then rclone destination will be the RCLONE_PATH from config.env
 """
 
+CAT_SEL_HELP_MESSAGE = """
 
+Reply to an active /{cmd} which was used to start the download or add gid along with {cmd}
+This command mainly for change category incase you decided to change category from already added download.
+But you can always use /{mir} with to select category before download start.
+
+<b><u>Upload Custom Drive</u></b>
+<code>/{cmd}</code> -id <code>drive_folder_link</code> or <code>drive_id</code> -index <code>https://anything.in/0:</code> gid or by replying to active download
+drive_id must be folder id and index must be url else it will not accept."""
+
+TOR_SEL_HELP_MESSAGE = """
+
+Reply to an active <code>/{cmd}</code> which was used to start the qb-download or add gid along with cmd\n\n
+This command mainly for selection incase you decided to select files from already added torrent.
+But you can always use <code>/{mir}</code> with arg `-s` to select files before download start.
+
+"""
 default_desp = {'AS_DOCUMENT': 'Default type of Telegram file upload. Default is False mean as media.',
                 'ANIME_TEMPLATE': 'Set template for AniList Template. HTML Tags supported',
                 'AUTHORIZED_CHATS': 'Fill user_id and chat_id of groups/users you want to authorize. Separate them by space.',
