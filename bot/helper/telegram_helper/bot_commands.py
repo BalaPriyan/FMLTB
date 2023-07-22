@@ -20,6 +20,7 @@ class _BotCommands:
         self.StatusCommand = [f'status{CMD_SUFFIX}', 'sall']
         self.AddImageCommand = f'addimg{CMD_SUFFIX}'
         self.ImagesCommand = f'images{CMD_SUFFIX}'
+        self.MediaInfoCommand = [f'mediainfo{CMD_SUFFIX}', f'mi{CMD_SUFFIX}']
         self.UsersCommand = f'users{CMD_SUFFIX}'
         self.AuthorizeCommand = f'authorize{CMD_SUFFIX}'
         self.UnAuthorizeCommand = f'unauthorize{CMD_SUFFIX}'
