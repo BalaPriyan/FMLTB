@@ -431,6 +431,16 @@ def extra_btns(buttons):
             buttons.ubutton(btn_name, btn_url)
     return buttons
 
+
+async def check_user_tasks(user_id, maxtask):
+    downloading_tasks   = await getAllDownload(MirrorStatus.STATUS_DOWNLOADING, user_id)
+    uploading_tasks     = await getAllDownload(MirrorStatus.STATUS_UPLOADING, user_id)
+    queuedl_tasks       = await getAllDownload(MirrorStatus.STATUS_QUEUEDL, user_id)
+    queueup_tasks       = await getAllDownload(MirrorStatus.STATUS_QUEUEUP, user_id)
+    total_tasks         = downloading_tasks + uploading_tasks + queuedl_tasks + queueup_tasks
+    return len(total_tasks) >= maxtask
+
+
 async def download_image_url(url):
     path = "Images/"
     if not await aiopath.isdir(path):
