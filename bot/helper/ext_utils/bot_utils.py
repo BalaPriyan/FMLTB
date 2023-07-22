@@ -1,5 +1,4 @@
-from asyncio import (create_subprocess_exec, create_subprocess_shell,
-                     run_coroutine_threadsafe, sleep)
+from asyncio import (create_subprocess_exec, create_subprocess_shell, run_coroutine_threadsafe, sleep)
 from asyncio.subprocess import PIPE
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial, wraps
@@ -248,7 +247,6 @@ def get_readable_message():
         if (download.eng()).startswith("qBit"):
             msg += BotTheme('BTSEL', Btsel=f"/{BotCommands.BtSelectCommand}_{download.gid()}")
         msg += BotTheme('CANCEL', Cancel=f"/{BotCommands.CancelMirror}_{download.gid()}")
-        if config_dict['DELETE_LINKS']:
 
     if len(msg) == 0:
         return None, None
