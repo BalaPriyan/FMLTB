@@ -45,7 +45,7 @@ class TelegraphHelper:
             await sleep(st.retry_after)
             return await self.create_page(title, content)
 
-        async def revoke_access_token(self):
+    async def revoke_access_token(self):
         if self.__error:
             LOGGER.info('Telegraph is not working')
             return
