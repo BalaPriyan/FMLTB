@@ -21,7 +21,7 @@ from aiofiles.os import remove as aioremove, path as aiopath, mkdir
 from concurrent.futures import ThreadPoolExecutor
 from requests import get as rget
 from mega import MegaApi
-from subprocess import run as srun
+from subprocess import run as zrun
 
 from bot import bot_loop, bot_name, botStartTime, config_dict, OWNER_ID, DATABASE_URL, LOGGER, get_client, aria2, download_dict, download_dict_lock, extra_buttons, user_data
 from bot.helper.ext_utils.shortener import short_url
@@ -147,7 +147,7 @@ def get_progress_bar_string(pct):
 
 def get_p7zip_version():
     try:
-        result = srun(['7z', '-version'], capture_output=True, text=True)
+        result = zrun(['7z', '-version'], capture_output=True, text=True)
         return result.stdout.split('\n')[2].split(' ')[2]
     except FileNotFoundError:
         return ''
@@ -155,14 +155,14 @@ def get_p7zip_version():
 
 def get_ffmpeg_version():
     try:
-        result = srun(['ffmpeg', '-version'], capture_output=True, text=True)
+        result = zrun(['ffmpeg', '-version'], capture_output=True, text=True)
         return result.stdout.split('\n')[0].split(' ')[2].split('ubuntu')[0]
     except FileNotFoundError:
         return ''
 
 def get_rclone_version():
     try:
-        result = srun(['rclone', 'version'], capture_output=True, text=True)
+        result = zrun(['rclone', 'version'], capture_output=True, text=True)
         return result.stdout.split('\n')[0].split(' ')[1]
     except FileNotFoundError:
         return ''
