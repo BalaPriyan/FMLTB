@@ -95,6 +95,9 @@ async def getAllDownload(req_status, user_id=None):
                 dls.append(dl)
     return dls
 
+async def get_user_tasks(user_id, maxtask):
+    if tasks := await getAllDownload('all', user_id):
+        return len(tasks) >= maxtask
 
 def bt_selection_buttons(id_, isCanCncl=True):
     gid = id_[:12] if len(id_) > 20 else id_
