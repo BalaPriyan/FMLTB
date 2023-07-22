@@ -34,7 +34,7 @@ from .modules import (anonymous, authorize, bot_settings, cancel_mirror,
                       gd_list, leech_del, mirror_leech, rmdb, rss,
                       shell, status, torrent_search,
                       torrent_select, users_settings, ytdlp, save_msg, images, mediainfo)
-
+from .helper.listeners.aria2_listener import start_aria2_listener
 from .helper.themes import BotTheme
 
 
