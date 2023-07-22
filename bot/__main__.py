@@ -317,7 +317,7 @@ async def restart_notification():
 
     async def send_incompelete_task_message(cid, msg):
         try:
-            if msg.startswith(BotTheme('RESTART_SUCCESS'):
+            if msg.startswith(BotTheme('RESTART_SUCCESS')):
                 await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Restarted Successfully!')
                 await bot.send_message(chat_id, msg, disable_web_page_preview=True, reply_to_message_id=msg_id)
                 await aioremove(".restartmsg")
