@@ -216,7 +216,7 @@ class GoogleDriveHelper:
                    msg = str(err).replace('>', '').replace('<', '')
                    LOGGER.error(err)
                    break
-          return msg
+           return msg
 
     def upload(self, file_name, size, gdrive_id):
         if not gdrive_id:
