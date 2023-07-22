@@ -19,9 +19,7 @@ from pyrogram.filters import command, private, regex
 from pyrogram.handlers import MessageHandler, CallbackQueryHandler
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
-from bot import (DATABASE_URL, INCOMPLETE_TASK_NOTIFIER, LOGGER,
-                 STOP_DUPLICATE_TASKS, Interval, QbInterval, bot, botStartTime,
-                 config_dict, scheduler, user_data,get_version )
+from bot import DATABASE_URL, INCOMPLETE_TASK_NOTIFIER, LOGGER, STOP_DUPLICATE_TASKS, Interval, QbInterval, bot, botStartTime, config_dict, scheduler, user_data,get_version 
 from .helper.telegram_helper.button_build import ButtonMaker
 from .helper.ext_utils.bot_utils import (cmd_exec, get_readable_file_size,
                                          get_readable_time, new_thread, set_commands,
