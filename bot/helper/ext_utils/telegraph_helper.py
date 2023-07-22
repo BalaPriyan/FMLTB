@@ -4,11 +4,10 @@ from asyncio import sleep
 from telegraph.aio import Telegraph
 from telegraph.exceptions import RetryAfterError
 
-from bot import LOGGER, bot_loop
+from bot import LOGGER, bot_loop, config_dict
 
 class TelegraphHelper:
     def __init__(self, author_name=None, author_url=None):
-        self.__error = False
         self.telegraph = Telegraph(domain='graph.org')
         self.short_name = ''.join(SystemRandom().choices(ascii_letters, k=8))
         self.access_token = None
@@ -89,6 +88,11 @@ class TelegraphHelper:
             )
         return
 
+
+telegraph = TelegraphHelper(config_dict['AUTHOR_NAME'],
+                            config_dict['AUTHOR_URL'])
+
+
     async def revoke_access_token(self):
         if self.__error:
             LOGGER.info('Telegraph is not working')
@@ -101,6 +105,4 @@ class TelegraphHelper:
                 f'Failed Revoking telegraph access token due to : {e}')
 
 
-telegraph = TelegraphHelper(
-    "FMLTB", "https://github.com/BalaPriyan/FMLTB")
 bot_loop.run_until_complete(telegraph.create_account())
