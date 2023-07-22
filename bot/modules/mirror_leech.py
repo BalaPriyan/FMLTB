@@ -205,7 +205,7 @@ async def _mirror_leech(client, message, isQbit=False, isLeech=False, sameDir=No
             link = await reply_to.download()
             file_ = None
 
- if not is_url(link) and not is_magnet(link) and not await aiopath.exists(link) and not is_rclone_path(link) and file_ is None:
+    if not is_url(link) and not is_magnet(link) and not await aiopath.exists(link) and not is_rclone_path(link) and file_ is None:
         a = await sendMessage(message, f"❗️ The command format is incorrect, or the link was not found in your command. \n\nGetting Mirrors & Leech Help Command, Please Wait.....⏳")
         await sleep(2)
         mention = f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>'
