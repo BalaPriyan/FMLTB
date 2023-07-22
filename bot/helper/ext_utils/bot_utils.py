@@ -125,6 +125,15 @@ async def get_telegraph_list(telegraph_content):
     return buttons.build_menu(1)
 
 
+def handleIndex(index, dic):
+    while True:
+        if abs(index) >= len(dic):
+            if index < 0: index = len(dic) - abs(index)
+            elif index > 0: index = index - len(dic)
+        else: break
+    return index
+
+
 def get_progress_bar_string(pct):
     pct = float(str(pct).strip('%'))
     p = min(max(pct, 0), 100)
