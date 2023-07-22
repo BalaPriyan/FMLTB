@@ -4,9 +4,12 @@ from signal import SIGINT, signal
 from sys import executable
 from time import time, monotonic
 from uuid import uuid4
-
+from requests import get as rget
+from datetime import datetime
+from sys import executable
 from bs4 import BeautifulSoup
 from pytz import timezone
+import platform
 from aiofiles import open as aiopen
 from aiofiles.os import path as aiopath
 from aiofiles.os import remove as aioremove
@@ -102,32 +105,74 @@ async def stats(_, message):
     await auto_delete_message(message, reply_message)
 
 
-async def start(_, message):
-    if len(message.command) > 1 and message.command[1] == "fond":
+async def start(client, message):
+    buttons = ButtonMaker()
+    buttons.ubutton(BotTheme('ST_BN1_NAME'), BotTheme('ST_BN1_URL'))
+    buttons.ubutton(BotTheme('ST_BN2_NAME'), BotTheme('ST_BN2_URL'))
+    reply_markup = buttons.build_menu(2)
+    if len(message.command) > 1 and message.command[1] == "wzmlx":
         await message.delete()
-    if len(message.command) > 1:
+    elif len(message.command) > 1 and config_dict['TOKEN_TIMEOUT']:
         userid = message.from_user.id
-        input_token = message.command[1]
-        if userid not in user_data:
-            return await sendMessage(message, 'This token is not yours!\n\nKindly generate your own.')
-        data = user_data[userid]
+        encrypted_url = message.command[1]
+        input_token, pre_uid = (b64decode(encrypted_url.encode()).decode()).split('&&')
+        if int(pre_uid) != userid:
+            return await sendMessage(message, '<b>Temporary Token is not yours!</b>\n\n<i>Kindly generate your own.</i>')
+        data = user_data.get(userid, {})
         if 'token' not in data or data['token'] != input_token:
-            return await sendMessage(message, 'Token already used!\n\nKindly generate a new one.')
-        data['token'] = str(uuid4())
-        data['time'] = time()
-        user_data[userid].update(data)
-        msg = 'Token refreshed successfully!\n\n'
-        msg += f'Validity: {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
-        return await sendMessage(message, msg)
+            return await sendMessage(message, '<b>Temporary Token already used!</b>\n\n<i>Kindly generate a new one.</i>')
+        elif config_dict['LOGIN_PASS'] is not None and data['token'] == config_dict['LOGIN_PASS']:
+            return await sendMessage(message, '<b>Bot Already Logged In via Password</b>\n\n<i>No Need to Accept Temp Tokens.</i>')
+        buttons.ibutton('Activate Temporary Token', f'pass {input_token}', 'header')
+        reply_markup = buttons.build_menu(2)
+        msg = '<b><u>Generated Temporary Login Token!</u></b>\n\n'
+        msg += f'<b>Temp Token:</b> <code>{input_token}</code>\n\n'
+        msg += f'<b>Validity:</b> {get_readable_time(int(config_dict["TOKEN_TIMEOUT"]))}'
+        return await sendMessage(message, msg, reply_markup)
+    elif await CustomFilters.authorized(client, message):
+        start_string = BotTheme('ST_MSG', help_command=f"/{BotCommands.HelpCommand}")
+        await sendMessage(message, start_string, reply_markup, photo='IMAGES')
+
     elif config_dict['DM_MODE']:
         await sendMessage(message, BotTheme('ST_DMMODE'), reply_markup, photo='IMAGES') 
     else:
         await sendMessage(message, BotTheme('ST_UNAUTH'), reply_markup, photo='IMAGES')
-    await sendMessage(message, start_string)
+    await DbManger().update_pm_users(message.from_user.id)
 
 
-async def restart(_, message):
-    restart_message = await sendMessage(message, "Restarting...")
+async def token_callback(_, query):
+    user_id = query.from_user.id
+    input_token = query.data.split()[1]
+    data = user_data.get(user_id, {})
+    if 'token' not in data or data['token'] != input_token:
+        return await query.answer('Already Used, Generate New One', show_alert=True)
+    update_user_ldata(user_id, 'token', str(uuid4()))
+    update_user_ldata(user_id, 'time', time())
+    await query.answer('Activated Temporary Token!', show_alert=True)
+    kb = query.message.reply_markup.inline_keyboard[1:]
+    kb.insert(0, [InlineKeyboardButton('✅️ Activated ✅', callback_data='pass activated')])
+    await query.edit_message_reply_markup(InlineKeyboardMarkup(kb))
+
+
+async def login(_, message):
+    if config_dict['LOGIN_PASS'] is None:
+        return
+    elif len(message.command) > 1:
+        user_id = message.from_user.id
+        input_pass = message.command[1]
+        if user_data.get(user_id, {}).get('token', '') == config_dict['LOGIN_PASS']:
+            return await sendMessage(message, '<b>Already Bot Login In!</b>')
+        if input_pass == config_dict['LOGIN_PASS']:
+            update_user_ldata(user_id, 'token', config_dict['LOGIN_PASS'])
+            return await sendMessage(message, '<b>Bot Permanent Login Successfully!</b>')
+        else:
+            return await sendMessage(message, '<b>Invalid Password!</b>\n\nKindly put the correct Password .')
+    else:
+        await sendMessage(message, '<b>Bot Login Usage :</b>\n\n<code>/cmd {password}</code>')
+
+
+async def restart(client, message):
+    restart_message = await sendMessage(message, BotTheme('RESTARTING'))
     if scheduler.running:
         scheduler.shutdown(wait=False)
     for interval in [QbInterval, Interval]:
@@ -183,74 +228,84 @@ async def search_images():
 help_string = f'''
 <b>NOTE: Click on any CMD to see more detalis.</b>
 
-/{BotCommands.MirrorCommand[0]} or /{BotCommands.MirrorCommand[1]}: Upload to Cloud Drive.
+<b>Use Mirror commands to download your link/file/rcl</b>
+➥ /{BotCommands.MirrorCommand[0]} or /{BotCommands.MirrorCommand[1]}: Download via file/url/media to Upload to Cloud Drive.
+
 
 <b>Use qBit commands for torrents only:</b>
-/{BotCommands.QbMirrorCommand[0]} or /{BotCommands.QbMirrorCommand[1]}: Download using qBittorrent and Upload to Cloud Drive.
+➥ /{BotCommands.QbMirrorCommand[0]} or /{BotCommands.QbMirrorCommand[1]}: Download using qBittorrent and Upload to Cloud Drive.
+➥ /{BotCommands.BtSelectCommand}: Select files from torrents by btsel_gid or reply.
 
-/{BotCommands.BtSelectCommand}: Select files from torrents by gid or reply.
 /{BotCommands.CategorySelect}: Change upload category for Google Drive.
 
-<b>Use Yt-Dlp commands for YouTube or any videos:</b>
-/{BotCommands.YtdlCommand[0]} or /{BotCommands.YtdlCommand[1]}: Mirror yt-dlp supported link.
+<b>Use yt-dlp commands for YouTube or any supported sites:</b>
+➥ /{BotCommands.YtdlCommand[0]} or /{BotCommands.YtdlCommand[1]}: Mirror yt-dlp supported link.
 
 <b>Use Leech commands for upload to Telegram:</b>
-/{BotCommands.LeechCommand[0]} or /{BotCommands.LeechCommand[1]}: Upload to Telegram.
-/{BotCommands.QbLeechCommand[0]} or /{BotCommands.QbLeechCommand[1]}: Download using qBittorrent and upload to Telegram(For torrents only).
-/{BotCommands.YtdlLeechCommand[0]} or /{BotCommands.YtdlLeechCommand[1]}: Download using Yt-Dlp(supported link) and upload to telegram.
-
-/leech{BotCommands.DeleteCommand} [telegram_link]: Delete replies from telegram (Only Owner & Sudo).
+➥ /{BotCommands.LeechCommand[0]} or /{BotCommands.LeechCommand[1]}: Upload to Telegram.
+➥ /{BotCommands.QbLeechCommand[0]} or /{BotCommands.QbLeechCommand[1]}: Download using qBittorrent and upload to Telegram(For torrents only).
+➥ /{BotCommands.YtdlLeechCommand[0]} or /{BotCommands.YtdlLeechCommand[1]}: Download using Yt-Dlp(supported link) and upload to telegram.
+➥ /leech{BotCommands.DeleteCommand} [telegram_link]: Delete replies from telegram (Only Owner & Sudo).
 
 <b>G-Drive commands:</b>
-/{BotCommands.CloneCommand}: Copy file/folder to Cloud Drive.
-/{BotCommands.CountCommand} [drive_url]: Count file/folder of Google Drive.
-/{BotCommands.DeleteCommand} [drive_url]: Delete file/folder from Google Drive (Only Owner & Sudo).
+➥ /{BotCommands.CloneCommand}: Copy file/folder to Cloud Drive.
+➥ /{BotCommands.CountCommand} [drive_url]: Count file/folder of Google Drive.
+➥ /{BotCommands.DeleteCommand} [drive_url]: Delete file/folder from Google Drive (Only Owner & Sudo).
 
 <b>Cancel Tasks:</b>
-/{BotCommands.CancelMirror}: Cancel task by gid or reply.
-/{BotCommands.CancelAllCommand[0]} : Cancel all tasks which added by you /{BotCommands.CancelAllCommand[1]} to in bots.
+➥ /{BotCommands.CancelMirror}: Cancel task by gid or reply.
+➥ /{BotCommands.CancelAllCommand[0]} : Cancel all tasks which added by you /{BotCommands.CancelAllCommand[1]} to in bots.
 
 <b>Torrent/Drive Search:</b>
-/{BotCommands.ListCommand} [query]: Search in Google Drive(s).
-/{BotCommands.SearchCommand} [query]: Search for torrents with API.
+➥ /{BotCommands.ListCommand} [query]: Search in Google Drive(s).
+➥ /{BotCommands.SearchCommand} [query]: Search for torrents with API.
 
 <b>Bot Settings:</b>
-/{BotCommands.UserSetCommand}: Open User settings.
-/{BotCommands.UsersCommand}: show users settings (Only Owner & Sudo).
-/{BotCommands.BotSetCommand}: Open Bot settings (Only Owner & Sudo).
+➥ /{BotCommands.UserSetCommand}: Open User settings.
+➥ /{BotCommands.UsersCommand}: show users settings (Only Owner & Sudo).
+➥ /{BotCommands.BotSetCommand}: Open Bot settings (Only Owner & Sudo).
 
 <b>Authentication:</b>
-/{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Only Owner & Sudo).
-/{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Only Owner & Sudo).
-/{BotCommands.AddSudoCommand}: Add sudo user (Only Owner).
-/{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner).
+➥ /{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Only Owner & Sudo).
+➥ /{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Only Owner & Sudo).
+➥ /{BotCommands.AddSudoCommand}: Add sudo user (Only Owner).
+➥ /{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner).
 
 <b>Bot Stats:</b>
-/{BotCommands.StatusCommand[0]} or /{BotCommands.StatusCommand[1]}: Shows a status of all active tasks.
-/{BotCommands.StatsCommand[0]} or /{BotCommands.StatsCommand[1]}: Show server stats.
-/{BotCommands.PingCommand[0]} or /{BotCommands.PingCommand[1]}: Check how long it takes to Ping the Bot.
+➥ /{BotCommands.StatusCommand[0]} or /{BotCommands.StatusCommand[1]}: Shows a status of all active tasks.
+➥ /{BotCommands.StatsCommand[0]} or /{BotCommands.StatsCommand[1]}: Show server stats.
+➥ /{BotCommands.PingCommand[0]} or /{BotCommands.PingCommand[1]}: Check how long it takes to Ping the Bot.
 
 <b>Maintainance:</b>
-/{BotCommands.RestartCommand[0]}: Restart and update the bot (Only Owner & Sudo).
-/{BotCommands.RestartCommand[1]}: Restart and update all bots (Only Owner & Sudo).
-/{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports (Only Owner & Sudo).
+➥ /{BotCommands.RestartCommand[0]}: Restart and update the bot (Only Owner & Sudo).
+➥ /{BotCommands.RestartCommand[1]}: Restart and update all bots (Only Owner & Sudo).
+➥ /{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports (Only Owner & Sudo).
 
 <b>Extras:</b>
-/{BotCommands.ShellCommand}: Run shell commands (Only Owner).
-/{BotCommands.EvalCommand}: Run Python Code Line | Lines (Only Owner).
-/{BotCommands.ExecCommand}: Run Commands In Exec (Only Owner).
-/{BotCommands.ClearLocalsCommand}: Clear {BotCommands.EvalCommand} or {BotCommands.ExecCommand} locals (Only Owner).
+➥ /{BotCommands.ShellCommand}: Run shell commands (Only Owner).
+➥ /{BotCommands.EvalCommand}: Run Python Code Line | Lines (Only Owner).
+➥ /{BotCommands.ExecCommand}: Run Commands In Exec (Only Owner).
+➥ /{BotCommands.ClearLocalsCommand}: Clear {BotCommands.EvalCommand} or {BotCommands.ExecCommand} locals (Only Owner).
 
 <b>RSS Feed:</b>
-/{BotCommands.RssCommand}: Open RSS Menu.
+➥ /{BotCommands.RssCommand}: Open RSS Menu.
 
 <b>Attention: Read the first line again!</b>
 '''
 
 @new_thread
-async def bot_help(_, message):
+async def bot_help(client, message):
     reply_message = await sendMessage(message, help_string)
     await auto_delete_message(message, reply_message)
+
+
+async def restart_notification():
+    now=datetime.now(timezone(config_dict['TIMEZONE']))
+    if await aiopath.isfile(".restartmsg"):
+        with open(".restartmsg") as f:
+            chat_id, msg_id = map(int, f)
+    else:
+        chat_id, msg_id = 0, 0
 
 
 async def restart_notification():
@@ -262,7 +317,7 @@ async def restart_notification():
 
     async def send_incompelete_task_message(cid, msg):
         try:
-            if msg.startswith('Restarted Successfully!'):
+            if msg.startswith(BotTheme('RESTART_SUCCESS'):
                 await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Restarted Successfully!')
                 await bot.send_message(chat_id, msg, disable_web_page_preview=True, reply_to_message_id=msg_id)
                 await aioremove(".restartmsg")
@@ -274,7 +329,7 @@ async def restart_notification():
     if DATABASE_URL:
         if INCOMPLETE_TASK_NOTIFIER and (notifier_dict := await DbManger().get_incomplete_tasks()):
             for cid, data in notifier_dict.items():
-                msg = 'Restarted Successfully!' if cid == chat_id else 'Bot Restarted!'
+                msg = BotTheme('RESTART_SUCCESS', time=now.strftime('%I:%M:%S %p'), date=now.strftime('%d/%m/%y'), timz=config_dict['TIMEZONE'], version=get_version()) if cid == chat_id else BotTheme('RESTARTED')
                 for tag, links in data.items():
                     msg += f"\n\n👤 {tag} Do your tasks again. \n"
                     for index, link in enumerate(links, start=1):
@@ -291,7 +346,7 @@ async def restart_notification():
 
     if await aiopath.isfile(".restartmsg"):
         try:
-                        await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text=BotTheme('RESTART_SUCCESS', time=now.strftime('%I:%M:%S %p'), date=now.strftime('%d/%m/%y'), timz=config_dict['TIMEZONE'], version=get_version()))
+            await bot.edit_message_text(chat_id=chat_id, message_id=msg_id, text=BotTheme('RESTART_SUCCESS', time=now.strftime('%I:%M:%S %p'), date=now.strftime('%d/%m/%y'), timz=config_dict['TIMEZONE'], version=get_version()))
         except:
             pass
         await aioremove(".restartmsg")
