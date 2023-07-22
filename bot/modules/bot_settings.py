@@ -148,7 +148,7 @@ async def load_config():
     if len(LEECH_REMOVE_UNWANTED) == 0:
         LEECH_REMOVE_UNWANTED = ''
 
-      LEECH_FILENAME_PREFIX = environ.get('LEECH_FILENAME_PREFIX', '')
+    LEECH_FILENAME_PREFIX = environ.get('LEECH_FILENAME_PREFIX', '')
     if len(LEECH_FILENAME_PREFIX) == 0:
         LEECH_FILENAME_PREFIX = ''
 
@@ -438,9 +438,6 @@ async def load_config():
     if len(FSUB_IDS) == 0:
         FSUB_IDS = ''
 
-    TIMEZONE = environ.get('TIMEZONE', '')
-    if len(TIMEZONE) == 0:
-        TIMEZONE = 'Asia/Kolkata'
 
     TOKEN_TIMEOUT = environ.get('TOKEN_TIMEOUT', '')
     if TOKEN_TIMEOUT.isdigit():
@@ -558,8 +555,7 @@ async def load_config():
                         'QUEUE_ALL': QUEUE_ALL,
                         'QUEUE_DOWNLOAD': QUEUE_DOWNLOAD,
                         'TIMEZONE': TIMEZONE,
-                        'SAVE_MSG': SAVE_MSG,
-                         'LEECH_FILENAME_PREFIX': LEECH_FILENAME_PREFIX,
+                        'LEECH_FILENAME_PREFIX': LEECH_FILENAME_PREFIX,
                         'LEECH_FILENAME_SUFFIX': LEECH_FILENAME_SUFFIX,
                         'LEECH_FILENAME_CAPTION': LEECH_FILENAME_CAPTION,
                         'LEECH_FILENAME_REMNAME': LEECH_FILENAME_REMNAME,
