@@ -39,19 +39,85 @@ class TgUploader:
         self.__total_files = 0
         self.__is_cancelled = False
         self.__thumb = f"Thumbnails/{listener.message.from_user.id}.jpg"
+        self.__sent_msg = None
+        self.__has_buttons = False
         self.__msgs_dict = {}
         self.__corrupted = 0
         self.__is_corrupted = False
         self.__media_dict = {'videos': {}, 'documents': {}}
         self.__last_msg_in_group = False
+        self.__prm_media = False
+        self.__client = bot
         self.__up_path = ''
         self.__lprefix = ''
         self.__lremname = ''
+        self.__ldump = ''
         self.__as_doc = False
         self.__media_group = False
         self.__sent_DMmsg = None
         self.__button = None
         self.__upload_dest = None
+        self.__bot_pm = False
+        self.__user_id = listener.message.from_user.id
+        self.__leechmsg = {}
+
+
+      async def __buttons(self, up_path):
+        buttons = ButtonMaker()
+        try:
+            if self.__mediainfo:
+                buttons.ubutton(BotTheme('MEDIAINFO_LINK'), await get_mediainfo_link(up_path))
+        except Exception as e:
+            LOGGER.error("MediaInfo Error: "+str(e))
+        if config_dict['SAVE_MSG'] and (config_dict['LEECH_LOG_ID'] or not self.__listener.isPrivate):
+            buttons.ibutton(BotTheme('SAVE_MSG'), 'save', 'footer')
+        if self.__has_buttons:
+            return buttons.build_menu(1)
+        return None
+
+    async def __copy_file(self):
+        try:
+            if self.__bot_pm and (self.__leechmsg or self.__listener.isSuperGroup):
+                destination = 'Bot PM'
+                copied = await bot.copy_message(chat_id=self.__user_id, from_chat_id=self.__sent_msg.chat.id, message_id=self.__sent_msg.id, reply_to_message_id=self.__listener.botpmmsg.id) 
+                if self.__has_buttons:
+                    rply = (InlineKeyboardMarkup(BTN) if (BTN := self.__sent_msg.reply_markup.inline_keyboard[:-1]) else None) if config_dict['SAVE_MSG'] else self.__sent_msg.reply_markup
+                    try:
+                        await copied.edit_reply_markup(rply)
+                    except MessageNotModified:
+                        pass
+
+            if len(self.__leechmsg) > 1:
+                for chat_id, msg in list(self.__leechmsg.items())[1:]:
+                    destination = f'Leech Log: {chat_id}'
+                    self.__leechmsg[chat_id] = await bot.copy_message(chat_id=chat_id, from_chat_id=self.__sent_msg.chat.id, message_id=self.__sent_msg.id, reply_to_message_id=msg.id)
+                    if msg.text and config_dict['CLEAN_LOG_MSG']:
+                        await msg.delete()
+                    if self.__has_buttons:
+                        try:
+                            await self.__leechmsg[chat_id].edit_reply_markup(self.__sent_msg.reply_markup)
+                        except MessageNotModified:
+                            pass
+
+            if self.__ldump:
+                destination = 'User Dump'
+                for channel_id in self.__ldump.split():
+                    chat = await chat_info(channel_id)
+                    try:
+                        dump_copy = await bot.copy_message(chat_id=chat.id, from_chat_id=self.__sent_msg.chat.id, message_id=self.__sent_msg.id)
+                        if self.__has_buttons:
+                            rply = (InlineKeyboardMarkup(BTN) if (BTN := self.__sent_msg.reply_markup.inline_keyboard[:-1]) else None) if config_dict['SAVE_MSG'] else self.__sent_msg.reply_markup
+                            try:
+                                await dump_copy.edit_reply_markup(rply)
+                            except MessageNotModified:
+                                pass
+                    except (ChannelInvalid, PeerIdInvalid) as e:
+                        LOGGER.error(f"{e.NAME}: {e.MESSAGE} for {channel_id}")
+                        continue
+        except Exception as err:
+            if not self.__is_cancelled:
+                LOGGER.error(f"Failed To Send in {destination}:\n{str(err)}")
+
 
     async def __upload_progress(self, current, total):
         if self.__is_cancelled:
