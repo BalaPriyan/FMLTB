@@ -481,6 +481,12 @@ LOGIN_PASS = environ.get('LOGIN_PASS', '')
 if len(LOGIN_PASS) == 0:
     LOGIN_PASS = None
 
+REQUEST_LIMITS = environ.get('REQUEST_LIMITS', '')
+if REQUEST_LIMITS.isdigit():
+    REQUEST_LIMITS = max(int(REQUEST_LIMITS), 5)
+else:
+    REQUEST_LIMITS = ''
+
 IMDB_TEMPLATE = environ.get('IMDB_TEMPLATE', '')
 if len(IMDB_TEMPLATE) == 0:
     IMDB_TEMPLATE = '''<b>Title: </b> {title} [{year}]
@@ -627,6 +633,7 @@ config_dict = {'ANIME_TEMPLATE': ANIME_TEMPLATE,
                'USER_SESSION_STRING': USER_SESSION_STRING,
                'USE_SERVICE_ACCOUNTS': USE_SERVICE_ACCOUNTS,
                'WEB_PINCODE': WEB_PINCODE,
+               'REQUEST_LIMITS': REQUEST_LIMITS,
                'YT_DLP_OPTIONS': YT_DLP_OPTIONS}
 
 if GDRIVE_ID:
