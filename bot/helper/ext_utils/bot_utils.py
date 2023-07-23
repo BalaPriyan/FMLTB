@@ -218,7 +218,7 @@ def get_readable_message():
                 msg += BotTheme('SPEED', Speed=download.speed())
             msg += BotTheme('ELAPSED', Elapsed=get_readable_time(time() - download.message.date.timestamp()))
             msg += BotTheme('ENGINE', Engine=download.eng())
-            msg += BotTheme('STA_MODE', Mode=download.upload_details['mode'])
+            msg += BotTheme('STA_MODE', Mode=download.extra_details['mode'])
             if hasattr(download, 'playList'):
                 try:
                     if playlist:=download.playList():
