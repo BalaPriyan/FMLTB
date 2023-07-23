@@ -29,7 +29,7 @@ from bot.helper.ext_utils.bulk_links import extract_bulk_links
 
 
 @new_task
-async def _mirror_leech(client, message, isQbit=False, isLeech=False, sameDir=None, bulk=[]):
+async def _mirror_leech(client, message, isQbit=False, isLeech=False, sameDir=None, bulk=[], compress=False, extract=False, tag=None, select=False, seed=False, rcFlags=None, upPath=None, isClone=False, join=False, isYtdlp=False, source_url=None):
     text = message.text.split('\n')
     input_list = text[0].split(' ')
 
