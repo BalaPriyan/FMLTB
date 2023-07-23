@@ -144,9 +144,9 @@ async def sendMultiMessage(chat_ids, text, buttons=None, photo=None):
             return str(e)
     return msg_dict
 
-async def sendFile(message, file, caption=None):
+async def sendFile(message, file, caption=None, buttons=None):
     try:
-        return await message.reply_document(document=file, quote=True, caption=caption, disable_notification=True)
+        return await message.reply_document(document=file, quote=True, caption=caption, disable_notification=True, reply_markup=buttons)
     except FloodWait as f:
         LOGGER.warning(str(f))
         await sleep(f.value * 1.2)
