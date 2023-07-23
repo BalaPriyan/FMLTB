@@ -15,7 +15,7 @@ from bot.helper.telegram_helper.button_build import ButtonMaker
 from bot.helper.ext_utils.exceptions import TgLinkException
 
 
-async def sendMessage(message, text, buttons=None):
+async def sendMessage(message, text, buttons=None, photo=None):
     try:
         if photo:
             try:
@@ -76,7 +76,7 @@ async def sendCustomMsg(chat_id, text, buttons=None, photo=None):
 
 
 
-async def editMessage(message, text, buttons=None):
+async def editMessage(message, text, buttons=None, photo=None):
     try:
         if message.media:
             if photo:
