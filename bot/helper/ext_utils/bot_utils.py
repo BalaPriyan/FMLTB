@@ -53,6 +53,7 @@ class MirrorStatus:
     STATUS_SPLITTING = "Split"
     STATUS_CHECKING = "CheckUP"
     STATUS_SEEDING = "Seed"
+    STATUS_UPLOADDDL = "Upload DDL"
 
 class setInterval:
     def __init__(self, interval, action):
