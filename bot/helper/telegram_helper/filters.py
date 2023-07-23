@@ -1,4 +1,6 @@
 from pyrogram.filters import create
+from pyrogram.enums import ChatType
+
 
 from bot import OWNER_ID, user_data
 from bot.helper.telegram_helper.message_utils import chat_info
