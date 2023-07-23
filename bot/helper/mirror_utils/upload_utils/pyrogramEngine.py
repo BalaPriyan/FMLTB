@@ -1,3 +1,4 @@
+from traceback import format_exc
 from asyncio import sleep
 from html import escape
 from logging import ERROR, getLogger
