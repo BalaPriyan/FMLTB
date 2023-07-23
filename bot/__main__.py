@@ -338,9 +338,6 @@ async def restart_notification():
                 if msg:
                     await send_incompelete_task_message(cid, msg)
 
-        if STOP_DUPLICATE_TASKS:
-            await DbManger().clear_download_links()
-
 
     if await aiopath.isfile(".restartmsg"):
         try:
