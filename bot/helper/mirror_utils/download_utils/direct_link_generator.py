@@ -8,6 +8,7 @@ from https://github.com/AvinashReddy3108/PaperplaneExtended . I hereby take no c
 than the modifications. See https://github.com/AvinashReddy3108/PaperplaneExtended/commits/master/userbot/modules/direct_links.py
 for original authorship. """
 
+from base64 import b64decode
 import tenacity
 from http.cookiejar import MozillaCookieJar
 from json import loads
@@ -20,8 +21,9 @@ from bs4 import BeautifulSoup
 from cloudscraper import create_scraper
 from lk21 import Bypass
 from lxml import etree
+from requests import session
 
-from bot import config_dict
+from bot import config_dict, LOGGER,
 from bot.helper.ext_utils.bot_utils import get_readable_time, is_share_link
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 from bot.helper.telegram_helper.message_utils import deleteMessage
@@ -84,7 +86,7 @@ def direct_link_generator(link: str):
         return wetransfer(link)
     elif any(x in domain for x in anonfilesBaseSites):
         return anonfilesBased(link)
-    elif any(x in domain for x in ['terabox', 'nephobox', '4funbox', 'mirrobox', '1024tera']):
+    elif any(x in domain for x in ['terabox', 'nephobox', '4funbox', 'mirrobox', 'momerybox', 'teraboxapp', '1024tera']):
         return terabox(link)
     elif any(x in domain for x in fmed_list):
         return fembed(link)
