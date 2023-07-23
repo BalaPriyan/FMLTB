@@ -23,7 +23,7 @@ from lk21 import Bypass
 from lxml import etree
 from requests import session
 
-from bot import config_dict, LOGGER,
+from bot import config_dict, LOGGER
 from bot.helper.ext_utils.bot_utils import get_readable_time, is_share_link
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
 from bot.helper.telegram_helper.message_utils import deleteMessage
