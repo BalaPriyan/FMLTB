@@ -18,7 +18,7 @@ from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from tenacity import (RetryError, retry, retry_if_exception_type,
                       stop_after_attempt, wait_exponential)
 
-from bot import GLOBAL_EXTENSION_FILTER, DRIVES_IDS, INDEX_URLS, config_dict, list_drives_dict
+from bot import GLOBAL_EXTENSION_FILTER, DRIVES_ID, INDEX_URL, config_dict, list_drives_dict
 from bot.helper.ext_utils.bot_utils import (async_to_sync,
                                             get_readable_file_size,
                                             setInterval)
