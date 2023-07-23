@@ -18,11 +18,12 @@ from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from tenacity import (RetryError, retry, retry_if_exception_type,
                       stop_after_attempt, wait_exponential)
 
-from bot import GLOBAL_EXTENSION_FILTER, config_dict, list_drives_dict
+from bot import GLOBAL_EXTENSION_FILTER, DRIVES_IDS, INDEX_URLS, config_dict, list_drives_dict
 from bot.helper.ext_utils.bot_utils import (async_to_sync,
                                             get_readable_file_size,
                                             setInterval)
 from bot.helper.ext_utils.fs_utils import get_mime_type
+from bot.helper.ext_utils.leech_utils import format_filename
 
 LOGGER = getLogger(__name__)
 getLogger('googleapiclient.discovery').setLevel(ERROR)
@@ -36,6 +37,7 @@ class GoogleDriveHelper:
         self.__G_DRIVE_BASE_DOWNLOAD_URL = "https://drive.google.com/uc?id={}&export=download"
         self.__G_DRIVE_DIR_BASE_DOWNLOAD_URL = "https://drive.google.com/drive/folders/{}"
         self.__listener = listener
+        self.__user_id = listener.message.from_user.id if listener else None
         self.__path = path
         self.__total_bytes = 0
         self.__total_files = 0
