@@ -24,7 +24,6 @@ class Aria2Status:
         self.message = listener.message
         self.extra_details = self.__listener.extra_details
         self.engine = engine_
-        self.upload_details = self.__listener.upload_details
 
     def __update(self):
         if self.__download is None:
