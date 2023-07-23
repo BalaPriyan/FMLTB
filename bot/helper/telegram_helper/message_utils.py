@@ -3,6 +3,7 @@ from asyncio import sleep
 from datetime import datetime, timedelta, timezone
 from time import time
 from re import match as re_match
+from random import choice as rchoice
 
 from pyrogram.errors import ReplyMarkupInvalid, FloodWait, PeerIdInvalid, RPCError, UserNotParticipant, MessageNotModified, MessageEmpty, PhotoInvalidDimensions, WebpageCurlFailed, MediaEmpty
 from pyrogram.types import ChatPermissions, InputMediaPhoto
