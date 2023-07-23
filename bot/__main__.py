@@ -283,6 +283,7 @@ help_string = f'''
 ➥ /{BotCommands.ShellCommand}: Run shell commands (Only Owner).
 ➥ /{BotCommands.EvalCommand}: Run Python Code Line | Lines (Only Owner).
 ➥ /{BotCommands.ExecCommand}: Run Commands In Exec (Only Owner).
+➥ /{BotCommands.AddImageCommand} [url/photo]: Add Images in Bot
 ➥ /{BotCommands.ClearLocalsCommand}: Clear {BotCommands.EvalCommand} or {BotCommands.ExecCommand} locals (Only Owner).
 
 <b>RSS Feed:</b>
