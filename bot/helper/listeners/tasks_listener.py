@@ -45,7 +45,7 @@ class MirrorLeechListener:
     def __init__(self, message, compress=False, extract=False, isQbit=False,
                  isLeech=False, tag=None, select=False,
                  seed=False, sameDir=None, rcFlags=None, upPath=None, join=False, isClone=False, raw_url=None,
-                 drive_id=None, index_link=None, dmMessage=None, logMessage=None):
+                 drive_id=None, index_link=None, dmMessage=None, logMessage=None, source_url=None):
         if not sameDir:
             sameDir = {}
         self.message = message
@@ -75,6 +75,7 @@ class MirrorLeechListener:
         self.extra_details = {'startTime': time()}
         self.__setMode()
         self.__source()
+        self.source_url = source_url if source_url and source_url.startswith('http') else ("https://t.me/share/url?url=" + source_url) if source_url else message.link
 
     async def clean(self):
         try:
