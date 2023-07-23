@@ -62,7 +62,7 @@ class TgUploader:
         self.__leechmsg = {}
 
 
-      async def __buttons(self, up_path):
+    async def __buttons(self, up_path):
         buttons = ButtonMaker()
         try:
             if self.__mediainfo:
