@@ -321,11 +321,11 @@ def get_readable_time(seconds):
 
 
 def is_magnet(url):
-    return bool(match(MAGNET_REGEX, url))
+    return bool(re_match(MAGNET_REGEX, url))
 
 
 def is_url(url):
-    return bool(match(URL_REGEX, url))
+    return bool(re_match(URL_REGEX, url))
 
 
 def is_gdrive_link(url):
@@ -341,7 +341,7 @@ def is_share_link(url: str):
         regex = r'(https?:\/\/.+\.gdtot\..+\/file\/\d+)'
     else:
         regex = r'(https?:\/\/(\S+)\..+\/file\/\S+)'
-    return bool(match(regex, url))
+    return bool(re_match(regex, url))
 
 
 def is_mega_link(url):
@@ -349,7 +349,7 @@ def is_mega_link(url):
 
 
 def is_rclone_path(path):
-    return bool(match(r'^(mrcc:)?(?!magnet:)(?![- ])[a-zA-Z0-9_\. -]+(?<! ):(?!.*\/\/).*$|^rcl$', path))
+    return bool(re_match(r'^(mrcc:)?(?!magnet:)(?![- ])[a-zA-Z0-9_\. -]+(?<! ):(?!.*\/\/).*$|^rcl$', path))
 
 
 def get_mega_link_type(url):
