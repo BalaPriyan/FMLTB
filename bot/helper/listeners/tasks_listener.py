@@ -391,7 +391,7 @@ class MirrorLeechListener:
             await RCTransfer.upload(up_path, size)
 
     async def onUploadComplete(self, link, size, files, folders, mime_type, name, rclonePath=''):
-        if DATABASE_URL and config_dict['STOP_DUPLICATE_TASKS'] and self.raw_url:
+        if DATABASE_URL and config_dict['STOP_DUPLICATE'] and self.raw_url:
             await DbManger().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManger().rm_complete_task(self.message.link)
@@ -561,7 +561,7 @@ class MirrorLeechListener:
             await update_all_messages()
         await auto_delete_message(self.message, reply_message)
 
-        if DATABASE_URL and config_dict['STOP_DUPLICATE_TASKS'] and self.raw_url:
+        if DATABASE_URL and config_dict['STOP_DUPLICATE'] and self.raw_url:
             await DbManger().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManger().rm_complete_task(self.message.link)
@@ -603,7 +603,7 @@ class MirrorLeechListener:
             await self.clean()
         else:
             await update_all_messages()
-        if DATABASE_URL and config_dict['STOP_DUPLICATE_TASKS'] and self.raw_url:
+        if DATABASE_URL and config_dict['STOP_DUPLICATE'] and self.raw_url:
             await DbManger().remove_download(self.raw_url)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManger().rm_complete_task(self.message.link)
