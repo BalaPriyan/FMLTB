@@ -63,5 +63,6 @@ class _BotCommands:
         self.BroadcastCommand = [f'broadcast{CMD_SUFFIX}', f'bc{CMD_SUFFIX}']
         self.AniListCommand = f'anime{CMD_SUFFIX}'
         self.AnimeHelpCommand = f'animehelp{CMD_SUFFIX}'
+        self.MyDramaListCommand = f'mdl{CMD_SUFFIX}'
 
 BotCommands = _BotCommands()
