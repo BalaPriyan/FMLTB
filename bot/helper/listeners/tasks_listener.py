@@ -11,7 +11,7 @@ from bot import (DATABASE_URL, DOWNLOAD_DIR, GLOBAL_EXTENSION_FILTER, LOGGER,
                  MAX_SPLIT_SIZE, Interval, aria2, config_dict, download_dict,
                  download_dict_lock, non_queued_dl, non_queued_up,
                  queue_dict_lock, queued_dl, queued_up, status_reply_dict_lock,
-                 user_data, STOP_DUPLICATE_TASKS)
+                 user_data)
 from bot.helper.ext_utils.bot_utils import (extra_btns, get_readable_file_size,
                                             get_readable_time, sync_to_async)
 from bot.helper.ext_utils.db_handler import DbManger
@@ -121,7 +121,7 @@ class MirrorLeechListener:
     async def onDownloadStart(self):
         if self.dmMessage == 'BotStarted':
             self.dmMessage = await send_to_chat(self.message._client, self.message.from_user.id, self.message.link)
-        if DATABASE_URL and config_dict['STOP_DUPLICATE_TASKS'] and self.raw_url:
+        if DATABASE_URL and config_dict['STOP_DUPLICATE'] and self.raw_url:
             await DbManger().add_download_url(self.raw_url, self.tag)
         if self.isSuperGroup and config_dict['INCOMPLETE_TASK_NOTIFIER'] and DATABASE_URL:
             await DbManger().add_incomplete_task(self.message.chat.id, self.message.link, self.tag)
